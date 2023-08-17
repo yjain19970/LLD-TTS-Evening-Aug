@@ -4,17 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class Sorter implements Callable<List<Integer>> {
     private List<Integer> arrayToSort;
-    public Sorter(List<Integer> input) {
+    private ExecutorService es;
+    public Sorter(List<Integer> input, ExecutorService es) {
         arrayToSort = input;
+        this.es= es;
     }
 
     @Override
     public List<Integer> call() throws Exception {
-        System.out.println("call thread name is: " + Thread.currentThread().getName());
+        System.out.println("call thread name is: " + Thread.currentThread().getName()
+        + " Array IS: " + arrayToSort.toString());
         // Base Condition
         if(arrayToSort.size() <= 1){
             return arrayToSort;
@@ -35,13 +38,12 @@ public class Sorter implements Callable<List<Integer>> {
         }
 
         // s3 HOW DO WE CALL the MERGE SORT?
-        Sorter leftSorter = new Sorter(leftArray);
-        Sorter rightSorter = new Sorter(rightArray);
+        Sorter leftSorter = new Sorter(leftArray, es);
+        Sorter rightSorter = new Sorter(rightArray, es);
 
 
-        //ExecutorService ee = Executors.newCachedThreadPool();
-        List<Integer> leftSortedArray = leftSorter.call();
-        List<Integer> rightSortedArray = rightSorter.call();
+        Future<List<Integer>> leftSortedArrayFuture = es.submit(leftSorter);
+        Future<List<Integer>> rightSortedArrayFuture = es.submit(rightSorter);
 
         // WE have gotten the sorted arrays. We need to merge them Now
 
@@ -50,23 +52,23 @@ public class Sorter implements Callable<List<Integer>> {
 
         int i=0, j=0;
 
-        while(i < leftSortedArray.size() && j < rightSortedArray.size()){
-            if(leftSortedArray.get(i) < rightSortedArray.get(j)){
-                sortedArray.add(leftSortedArray.get(i));
+        while(i < leftSortedArrayFuture.get().size() && j < rightSortedArrayFuture.get().size()){
+            if(leftSortedArrayFuture.get().get(i) < rightSortedArrayFuture.get().get(j)){
+                sortedArray.add(leftSortedArrayFuture.get().get(i));
                 ++i;
             }else{
-                sortedArray.add(rightSortedArray.get(j));
+                sortedArray.add(rightSortedArrayFuture.get().get(j));
                 ++j;
             }
         }
 
         // s5 WHAT ELSE? --> check for remaining half
-        while(i < leftSortedArray.size()){
-            sortedArray.add(leftSortedArray.get(i)); i++;
+        while(i < leftSortedArrayFuture.get().size()){
+            sortedArray.add(leftSortedArrayFuture.get().get(i)); i++;
         }
 
-        while(j < rightSortedArray.size()){
-            sortedArray.add(rightSortedArray.get(j)); j++;
+        while(j < rightSortedArrayFuture.get().size()){
+            sortedArray.add(rightSortedArrayFuture.get().get(j)); j++;
         }
 
         // s6 now return --> LEts go to CLIENT
