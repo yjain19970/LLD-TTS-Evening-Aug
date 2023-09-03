@@ -15,7 +15,7 @@ public class Consumer implements Runnable {
     public void run() {
         while (true) {
             if (store.size() > 0) {
-                store.remove(); //
+                store.poll(); //
                 System.out.println(name + " consumed. Left shirts count = " + store.size());
             }
         }

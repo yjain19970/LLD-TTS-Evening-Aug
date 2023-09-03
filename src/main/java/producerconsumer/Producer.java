@@ -17,7 +17,7 @@ public class Producer implements Runnable {
     public void run() {
         while (true) {
             if (store.size() < maxSizeOfStore) {
-                store.add(new Shirt());
+                store.offer(new Shirt());
                 System.out.println(name + " produced. Left shirts count = " + store.size());
             }
         }
