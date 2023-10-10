@@ -18,17 +18,17 @@ public class User {
 
     public static void main(String[] args) throws Exception {
         GameController gameController = new GameController();
-        Scanner sc = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
 
         List<Player> players = new ArrayList<>();
 
         players.add(new Player("Mudit", 1,
                 new Symbol('X'),
-                PlayerType.HUMAN,sc));
+                PlayerType.HUMAN,scanner));
 
         players.add(new Player("Nipun", 2,
                 new Symbol('0'),
-                PlayerType.HUMAN,sc));
+                PlayerType.HUMAN,scanner));
 
         List<GameWinningStrategy> winRules = new ArrayList<>();
         winRules.add(new RowGameWinStrategy());
@@ -39,18 +39,31 @@ public class User {
                 3);
 
 
-        while(gameController.checkState(game).equals(GameState.IN_PROGRESS)){
-            /**
-             * 1. Print the board
-             * 2. identify which players move it is.
-             * 3. Ask player to give cell no to move
-             *
-             */
+        while(gameController.checkState(game).equals(GameState.IN_PROGRESS)) {
+            // 1. printBoard
+            // 2. x's turn
+            // 3. ask to makeMove
 
             gameController.printBoard(game);
 
+            System.out.println("Does anyone want to undo? (y/n)");
+            String undoAnswer = scanner.next();
+
+            if (undoAnswer.equalsIgnoreCase("y")) {
+                gameController.undo(game);
+                continue;
+            }
+
             gameController.makeMove(game);
-            // user -> Controller -> Game -> Player
+        }
+
+        System.out.println("Game is finished");
+        GameState state = gameController.checkState(game);
+
+        if (state.equals(GameState.DRAW)) {
+            System.out.println("It is a draw");
+        } else {
+            System.out.println("Winner is " + gameController.getWinner(game).getName());
         }
 
         if(game.getGameState().equals(GameState.DRAW)){

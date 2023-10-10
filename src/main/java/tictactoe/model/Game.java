@@ -23,6 +23,7 @@ public class Game {
         this.gameState = GameState.IN_PROGRESS; //
         this.nextPlayerIndex = 0; //
         this.winningStrategies = winningStrategies;
+        this.playerMoves = new ArrayList<>();
     }
 
     public List<Player> getPlayers() {
