@@ -3,10 +3,10 @@ package tictactoe.model;
 import tictactoe.model.types.CellState;
 
 public class Cell {
-    Integer row;
-    Integer col;
-    CellState cellState;
-    Player player;
+    private Integer row;
+    private Integer col;
+    private CellState cellState; // state.
+    private Player player;
 
     public Integer getRow() {
         return row;

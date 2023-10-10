@@ -1,8 +1,8 @@
 package tictactoe.model;
 
 public class Move {
-    Cell cell;
-    Player player;
+    private Cell cell;
+    private Player player;
 
     public Cell getCell() {
         return cell;

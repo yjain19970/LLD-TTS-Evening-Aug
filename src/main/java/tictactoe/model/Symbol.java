@@ -1,7 +1,7 @@
 package tictactoe.model;
 
 public class Symbol {
-    Character playerSymbol;
+    private Character playerSymbol;
 
     public Character getPlayerSymbol() {
         return playerSymbol;

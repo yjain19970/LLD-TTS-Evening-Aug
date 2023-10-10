@@ -3,14 +3,17 @@ package tictactoe.model;
 import java.util.List;
 
 public class Board {
-    List<List<Cell>> cells;
-    Integer size;
+    private List<List<Cell>> board;
+    private Integer size;
 
-    public List<List<Cell>> getCells() {
-        return cells;
+    public Board(int dimension) {
+    }
+
+    public List<List<Cell>> getBoard() {
+        return board;
     }
     public Integer getSize() {
-        return size;
+        return this.board.size();
     }
 
 

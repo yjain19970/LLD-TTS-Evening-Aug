@@ -3,10 +3,10 @@ package tictactoe.model;
 import tictactoe.model.types.PlayerType;
 
 public class Player {
-    String name;
-    Integer id;
-    Symbol symbol;
-    PlayerType type;
+    private String name;
+    private Integer id;
+    private Symbol symbol;
+    private PlayerType type;
 
     public String getName() {
         return name;
