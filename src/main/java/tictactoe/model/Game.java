@@ -1,5 +1,6 @@
 package tictactoe.model;
 
+import tictactoe.model.types.CellState;
 import tictactoe.model.types.GameState;
 import tictactoe.model.types.PlayerType;
 import tictactoe.strategy.GameWinningStrategy;
@@ -36,7 +37,7 @@ public class Game {
         return playerMoves;
     }
 
-    public Player getWinnerPlayer() {
+    public Player getWinnerPlayer(Game game) {
         return winnerPlayer;
     }
 
@@ -55,10 +56,79 @@ public class Game {
         return new Builder();
     }
 
-    public void makeMove() {
+    public void makeMove() throws Exception {
+        /*
+            S1. get the nextPlayerIndex. D
+            S2. call makeMove on Player D
+            S3. validation D
+            S4. update your cell D
+            s5. Add Move to list
+            s6. checkWinner
+         */
+
+        Player currentPlayer = players.get(nextPlayerIndex);
+        System.out.println("Current Player's move: " + currentPlayer.getName());
+
+        Move move = currentPlayer.makeMove();
+
+        if(!validateMove(move)){
+            throw new Exception();
+        }
+
+        Integer row = move.getCell().getRow();
+        Integer col = move.getCell().getCol();
+
+       Cell cellTobeUpdated = board.getBoard().get(row).get(col);
+       cellTobeUpdated.setCellState(CellState.FILLED);
+       cellTobeUpdated.setPlayer(move.getPlayer());
+
+       move.setCell(cellTobeUpdated);
+       playerMoves.add(move);
+
+       nextPlayerIndex++;
+       nextPlayerIndex = nextPlayerIndex%players.size(); // [A,B,C]
+
+       // checkWinner
+        if(checkWinner(move,board)){
+            gameState = GameState.END;
+            winnerPlayer = move.getPlayer();
+        }else if(playerMoves.size() == board.getSize()*board.getSize()){
+            gameState = GameState.DRAW;
+        }
     }
 
+    public boolean checkWinner(Move move, Board board){
+        for(GameWinningStrategy st : winningStrategies){
+            if(st.checkWinner(board,move)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean validateMove(Move move) {
+        int row = move.getCell().getRow();
+        int col = move.getCell().getCol();
+
+        if(row >= board.getSize()){
+            return false;
+        }
+
+        if(col >= board.getBoard().get(0).size()){
+            return false;
+        }
+
+        if(board.getBoard().get(row).get(col).
+                getCellState().equals(CellState.EMPTY)){
+            return true;
+        }
+
+        return false;
+    }
+
+
     public void printBoard() {
+        board.printBoard();
     }
 
     public void undo() {

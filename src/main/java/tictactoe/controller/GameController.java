@@ -13,15 +13,15 @@ public class GameController {
         game.printBoard();
     }
 
-    public void getWinner(Game game) {
-        game.getWinnerPlayer();
+    public Player getWinner(Game game) {
+        return  game.getWinnerPlayer(game);
     }
 
     public void undo(Game game){
         game.undo();
     }
 
-    public void makeMove(Game game){
+    public void makeMove(Game game) throws Exception {
         game.makeMove();
     }
 
