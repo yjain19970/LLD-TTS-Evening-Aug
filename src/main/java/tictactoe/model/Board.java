@@ -26,11 +26,6 @@ public class Board {
 
 
     public void printBoard() {
-        /**
-         *   C1 C2 C3   R1
-         *   C4 C5 C6   R2
-         *   C7 C8 C9   R3
-         */
         for (List<Cell> row: board) {
             for (Cell cell: row) {
                 cell.display();

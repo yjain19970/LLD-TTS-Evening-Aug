@@ -40,7 +40,7 @@ public class Cell {
 
     public void display() {
         if(cellState.equals(CellState.EMPTY)){
-            System.out.println("| - |");
+            System.out.print("| - |");
         }else{
             System.out.printf("| " + this.getPlayer()
                     .getSymbol().getPlayerSymbol() + " |"); // | X |
