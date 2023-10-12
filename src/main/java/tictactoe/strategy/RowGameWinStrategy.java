@@ -9,6 +9,7 @@ import java.util.Map;
 
 public class RowGameWinStrategy implements GameWinningStrategy{
     private final Map<Integer, HashMap<Symbol, Integer>> rowCountMap = new HashMap<>();
+
     @Override
     public boolean checkWinner(Board board, Move move) {
         int row = move.getCell().getRow();
@@ -31,5 +32,15 @@ public class RowGameWinStrategy implements GameWinningStrategy{
         }
 
         return false;
+    }
+
+    @Override
+    public void handleUndo(Board board, Move move) {
+        int row = move.getCell().getRow();
+        Symbol playerSymbol = move.getPlayer().getSymbol();
+
+        Map<Symbol,Integer> symbolMap = rowCountMap.get(row);
+        symbolMap.put(playerSymbol,symbolMap.get(playerSymbol)-1); // increament the count for symbol
+
     }
 }

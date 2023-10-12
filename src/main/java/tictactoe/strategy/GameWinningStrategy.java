@@ -9,4 +9,6 @@ public interface GameWinningStrategy {
     //DIAG
 
     boolean checkWinner(Board board, Move move);
+
+    void handleUndo(Board board, Move move);
 }

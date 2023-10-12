@@ -42,4 +42,13 @@ public class ColumnGameWinStrategy implements GameWinningStrategy{
 
         return false;
     }
+
+    @Override
+    public void handleUndo(Board board, Move move) {
+        int col = move.getCell().getCol();
+        Symbol playerSymbol = move.getPlayer().getSymbol();
+
+        Map<Symbol,Integer> symbolMap = colCountMap.get(col);
+        symbolMap.put(playerSymbol,symbolMap.get(playerSymbol)-1); // increament the count for symbol
+    }
 }

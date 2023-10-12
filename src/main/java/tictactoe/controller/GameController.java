@@ -17,7 +17,7 @@ public class GameController {
         return  game.getWinnerPlayer(game);
     }
 
-    public void undo(Game game){
+    public void undo(Game game) throws Exception {
         game.undo();
     }
 

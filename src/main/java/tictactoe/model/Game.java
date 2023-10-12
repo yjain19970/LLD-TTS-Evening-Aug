@@ -67,10 +67,21 @@ public class Game {
             s6. checkWinner
          */
 
+
+
         Player currentPlayer = players.get(nextPlayerIndex);
+
         System.out.println("Current Player's move: " + currentPlayer.getName());
 
-        Move move = currentPlayer.makeMove();
+        // check playerType
+        Move move = null;
+        if(currentPlayer.getType().equals(PlayerType.BOT)){
+            // call the method in BotPlayingStragey.
+            // return from here
+            // move =  callBotWinningStrategy accoring to level of Bot.
+        }else{
+            move = currentPlayer.makeMove(); // this is for HumanPlayer
+        }
 
         if(!validateMove(move)){
             throw new Exception();
@@ -132,7 +143,31 @@ public class Game {
         board.printBoard();
     }
 
-    public void undo() {
+    public void undo() throws Exception {
+        if(playerMoves.size() ==0 ){
+            throw new Exception();
+        }
+        /**
+         * Ds1: remove the last move
+         * Ds2: update cell state
+         * Ds3: update hashmaps
+         * s4: update player turn
+         */
+
+        Move lastMove = getPlayerMoves().get(playerMoves.size()-1);
+        playerMoves.remove(lastMove);
+
+        Cell lastCell = lastMove.getCell();
+        lastCell.setCellState(CellState.EMPTY);
+        lastCell.setPlayer(null);
+
+        for(GameWinningStrategy st : winningStrategies){
+            st.handleUndo(board,lastMove);
+        }
+
+        nextPlayerIndex--;
+        nextPlayerIndex = (nextPlayerIndex + players.size()) % players.size(); // ?
+
     }
 
 
