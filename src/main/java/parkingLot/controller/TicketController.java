@@ -5,8 +5,6 @@ import parkingLot.dto.TicketResponseDTO;
 import parkingLot.models.Ticket;
 import parkingLot.models.Vehicle;
 import parkingLot.service.ITicketService;
-import parkingLot.service.TicketService;
-import parkingLot.service.TicketServiceV2;
 
 public class TicketController {
     private ITicketService ticketService;
@@ -15,7 +13,7 @@ public class TicketController {
         this.ticketService = ticketService;
     }
 
-    public TicketResponseDTO generateTicket(TicketRequestDTO dto){
+    public TicketResponseDTO generateTicket(TicketRequestDTO dto) throws Exception {
         Ticket ticket = ticketService.generateTicket(dto.getGateId(),
                 dto.getParkingLotId(),
                 new Vehicle(dto.getVehicle().getVehicleNumber(),

@@ -1,36 +1,64 @@
 package parkingLot.service;
 
-import parkingLot.dto.TicketRequestDTO;
-import parkingLot.dto.TicketResponseDTO;
-import parkingLot.models.Ticket;
-import parkingLot.models.Vehicle;
+import parkingLot.models.*;
+import parkingLot.repository.GateRepository;
+import parkingLot.repository.ParkingLotRepository;
+import parkingLot.repository.TicketRepository;
+import parkingLot.repository.VehicleRepository;
+import parkingLot.strategy.ParkingSpotAssignmentStrategy;
+
+import java.util.Date;
+import java.util.Optional;
 
 public class TicketService implements ITicketService {
+    private GateRepository gateRepository;
+    private VehicleRepository vehicleRepository;
+    private ParkingLotRepository parkingLotRepository;
+    private TicketRepository ticketRepository;
+    private ParkingSpotAssignmentStrategy spotAssignmentStrategy;
+
+    public TicketService(GateRepository gateRepository,
+                         VehicleRepository vehicleRepository,
+                         ParkingLotRepository parkingLotRepository,
+                         TicketRepository ticketRepository,
+                         ParkingSpotAssignmentStrategy spotAssignmentStrategy) {
+        this.gateRepository = gateRepository;
+        this.vehicleRepository = vehicleRepository;
+        this.parkingLotRepository = parkingLotRepository;
+        this.ticketRepository = ticketRepository;
+        this.spotAssignmentStrategy  = spotAssignmentStrategy;
+    }
 
 
     @Override
-    public Ticket generateTicket(Long gateId, Long parkingLotId, Vehicle vehicle) {
-        /**
-         * 1. get parkingLot from parking_lot_id from DB
-         * 2. get the gate detils using gate_id from DB
-         * 3. assign a spot to vehicle
-         * 4. create the ticket
-         */
+    public Ticket generateTicket(Long gateId, Long parkingLotId, Vehicle vehicle) throws Exception {
+        Optional<ParkingLot> parkingLot =  parkingLotRepository.getParkingLotById(parkingLotId);
+        if(parkingLot.isEmpty()){
+            throw new Exception();
+        }
 
+        Optional<ParkingSpot> parkingSpotOptional = spotAssignmentStrategy.
+                findSpot(vehicle.getVehicleType(), parkingLot.get());
 
-        /**
-         *     private ParkingSpot parkingSpot; --> parkingLot --> by parkingLotId
-         *     private Date entryTime; --> new Date();
-         *     private Vehicle vehicle; Yes
-         *     private Gate gate; --> fetch Gate frm GateId.
-         *     private Operator operator; --> get the operator.
-         */
+        if(parkingSpotOptional.isEmpty()){
+            throw new Exception();
+        }
 
+        Optional<Gate> gateOptional= gateRepository.getGateById(gateId);
+        if(gateOptional.isEmpty()){
+            throw new Exception();
+        }
 
-        // generate the ticket
-        // store ticket in DB
-        // reutrn ticket
-        return null;
+        parkingSpotOptional.get().setSpotStatus(SpotStatus.UNAVAILABLE);
+        Ticket t  = new Ticket(parkingSpotOptional.get(),
+                new Date(),
+                vehicle,
+                gateOptional.get(),
+                gateOptional.get().getCurrentOperator());
+
+        Ticket tSaved = ticketRepository.saveTicket(t);
+
+        return tSaved;
     }
 
 
